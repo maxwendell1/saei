@@ -17,10 +17,7 @@ model Usuario {
   email String @unique
   senha String @db.VarChar(20)
 
-  alunoRm Int 
-  aluno Aluno @relation(fields: [alunoRm],references: [rm])
-
-  @@map("usuarios")
+    @@map("usuarios")
 }
 
 model Aluno {
@@ -36,21 +33,11 @@ model Aluno {
   responsavel2 String? @db.VarChar(100)
   ocorrencia   String? @db.VarChar(500)
 
-  usuario Usuario[]
-
-  turmaId String
-  turma Turma @relation(fields: [turmaId],references: [id])
-
   @@map("aluno")
 }
 
 model Turma {
   id String @id @db.VarChar(3)
-
-  alunos Aluno[]
-
-  professorId Int
-  professor Professor @relation(fields: [professorId],references: [registro])
 
   @@map("turmas")
 }
@@ -59,8 +46,6 @@ model Professor {
   registro Int    @id @default(autoincrement())
   nome     String @db.VarChar(100)
   endereco String @db.VarChar(100)
-
-  turmas Turma[]
 
   @@map("professores")
 }

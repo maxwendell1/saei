@@ -9,20 +9,9 @@ class UsuarioController {
                 orderBy: { nome: 'asc' },
                 select: {
                     nome: true,
+                    login: true,
                     email: true,
-                    aluno: {
-                        select: {
-                            nome: true,
-                            rm: true,
-                            ra: true,
-                            endereco: true,
-                            telFixo: true,
-                            cel: true,
-                            responsavel1: true,
-                            responsavel2: true,
-                            turmaId: true,
-                        }
-                    }
+                    senha: true,
                 }
             }
         );
@@ -38,17 +27,7 @@ class UsuarioController {
                     nome: true,
                     email: true,
                     aluno: {
-                        select: {
-                            nome: true,
-                            rm: true,
-                            ra: true,
-                            endereco: true,
-                            telFixo: true,
-                            cel: true,
-                            responsavel1: true,
-                            responsavel2: true,
-                            turmaId: true,
-                        }
+                        
                     }
                 }
             }
