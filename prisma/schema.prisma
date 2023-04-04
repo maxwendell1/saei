@@ -10,30 +10,29 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Usuario {
-  id Int @id @default(autoincrement())
-  login String @unique
-  nome  String @db.VarChar(100)
-  email String @unique
-  senha String @db.VarChar(20)
+model Admin {
+  id      Int    @id
+  usuario String @db.VarChar(100) @unique
+  senha   String @db.VarChar(100)
 
-    @@map("usuarios")
+  @@map("admin")
 }
 
 model Aluno {
-  rm Int @id @default(autoincrement())
-  nome         String @db.VarChar(100)
-  ra           String? @unique @db.VarChar(10)
-  endereco     String @db.VarChar(100)
-  telFixo      String? @db.VarChar(10)
-  cel          String? @db.VarChar(11)
-  nota         Int?    @default(2)
-  falta        Int?    @default(3)
-  responsavel1 String @db.VarChar(100)
-  responsavel2 String? @db.VarChar(100)
-  ocorrencia   String? @db.VarChar(500)
+  rm           Int      @id @default(autoincrement())
+  usuario      String   @db.VarChar(30)
+  senha        String   @db.VarChar(20)
+  nome         String   @db.VarChar(100)
+  nascimento   DateTime @map("nascimento") @db.DateTime(0)
+  ra           String?  @unique @db.VarChar(10)
+  endereco     String   @db.VarChar(100)
+  email        String?  @db.VarChar(100)
+  telFixo      String?  @db.VarChar(10)
+  cel          String?  @db.VarChar(11)
+  responsavel1 String   @db.VarChar(100)
+  responsavel2 String?  @db.VarChar(100)
 
-  @@map("aluno")
+  @@map("alunos")
 }
 
 model Turma {
@@ -43,9 +42,34 @@ model Turma {
 }
 
 model Professor {
-  registro Int    @id @default(autoincrement())
-  nome     String @db.VarChar(100)
-  endereco String @db.VarChar(100)
+  registro Int     @id @default(autoincrement())
+  usuario  String  @db.VarChar(30)
+  senha    String  @db.VarChar(20)
+  nome     String  @db.VarChar(100)
+  endereco String  @db.VarChar(100)
+  telFixo  String? @db.VarChar(10)
+  cel      String? @db.VarChar(11)
 
   @@map("professores")
+}
+
+model Bimestre {
+  id  Int @id @default(autoincrement())
+  ano Int @default(4)
+
+  @@map("bimestres")
+}
+
+model Disciplina {
+  id   Int    @id @default(autoincrement())
+  nome String @db.VarChar(30)
+
+  @@map("disciplinas")
+}
+
+model Nota {
+  id    Int     @id @default(autoincrement())
+  valor Decimal @db.Decimal(3, 1)
+
+  @@map("notas")
 }
