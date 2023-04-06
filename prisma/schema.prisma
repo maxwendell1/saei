@@ -11,7 +11,7 @@ datasource db {
 }
 
 model Admin {
-  id      Int    @id
+  id      Int    @id @default(autoincrement())
   usuario String @db.VarChar(100) @unique
   senha   String @db.VarChar(100)
 
@@ -20,10 +20,9 @@ model Admin {
 
 model Aluno {
   rm           Int      @id @default(autoincrement())
-  usuario      String   @db.VarChar(30)
   senha        String   @db.VarChar(20)
   nome         String   @db.VarChar(100)
-  nascimento   DateTime @map("nascimento") @db.DateTime(0)
+  nascimento   DateTime @default(now())
   ra           String?  @unique @db.VarChar(10)
   endereco     String   @db.VarChar(100)
   email        String?  @db.VarChar(100)
@@ -43,7 +42,6 @@ model Turma {
 
 model Professor {
   registro Int     @id @default(autoincrement())
-  usuario  String  @db.VarChar(30)
   senha    String  @db.VarChar(20)
   nome     String  @db.VarChar(100)
   endereco String  @db.VarChar(100)
