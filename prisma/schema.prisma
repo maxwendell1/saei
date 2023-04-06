@@ -22,7 +22,6 @@ model Aluno {
   rm           Int      @id @default(autoincrement())
   senha        String   @db.VarChar(20)
   nome         String   @db.VarChar(100)
-  nascimento   DateTime @default(now())
   ra           String?  @unique @db.VarChar(10)
   endereco     String   @db.VarChar(100)
   email        String?  @db.VarChar(100)

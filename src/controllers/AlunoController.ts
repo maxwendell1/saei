@@ -60,9 +60,8 @@ class AlunoController {
             {
                 data: {
                     rm: rm,
-                    senha: senha,
+                    senha: await hash(senha, 8),
                     nome: nome,
-                    nascimento: nascimento,
                     ra: ra,
                     endereco: endereco,
                     email: email,
@@ -75,7 +74,6 @@ class AlunoController {
                     rm: true,
                     senha: true,
                     nome: true,
-                    nascimento: true,
                     ra: true,
                     endereco: true,
                     email: true,
