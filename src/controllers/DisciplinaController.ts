@@ -3,82 +3,78 @@ import { PrismaClient } from '@prisma/client';
 import { hash, compare } from 'bcryptjs';  // pacote de criptografia
 import { Secret, sign } from 'jsonwebtoken'; // sign é usado para gerar o token
 
-class AdminController {
+class DisciplinaController {
 
     async index(req: Request, res: Response) {
         const prisma = new PrismaClient();
-        const admins = await prisma.admin.findMany(
+        const disciplinas = await prisma.disciplina.findMany(
             {
                 orderBy: { id: 'asc' },
                 select: {
                     id: true,
-                    usuario: true,
-                    senha: true
+                    nome: true                    
                 }
             }
         );
-        res.status(200).json(admins);
+        res.status(200).json(disciplinas);
     }
 
     async show(req: Request, res: Response) {
         const prisma = new PrismaClient();
-        const admins = await prisma.admin.findUnique(
+        const disciplinas = await prisma.disciplina.findUnique(
             {
                 where: { id: Number(req.params.id) },
                 select: {
                     id: true,
-                    usuario: true,
-                    senha: true   
+                    nome: true   
                 }
             }
         );
-        res.status(200).json(admins);
+        res.status(200).json(disciplinas);
     }
 
     async store(req: Request, res: Response) {
         const prisma = new PrismaClient();
-        const { id, usuario, senha } = req.body;
-        if (id == null || usuario == null || senha == null) {
-            return res.status(400).json({ status: 'id, usuário e senha devem ser fornecidos.' });
+        const { id, nome } = req.body;
+        if (id == null || nome == null) {
+            return res.status(400).json({ status: 'id e nome da disciplina devem ser fornecidos.' });
         }
         try {
-            const novoAdmin = await prisma.admin.create(
+            const novaDisciplina = await prisma.disciplina.create(
                 {
                     data: {
                         id: id,
-                        usuario: usuario,
-                        senha: await hash(senha, 8) // ciptografa a senha, 8 é o salto
+                        nome: nome
                     },
                     select: {
                         id: true,
-                        usuario: true,
-                        senha: true
+                        nome: true
                     }
                 });
-            res.status(200).json(novoAdmin);
+            res.status(200).json(novaDisciplina);
         } catch (erro) {
-            return res.status(400).json({ status: 'O nome de usuário deve ser único' });
+            return res.status(400).json({ status: 'O nome da disciplina deve ser único' });
         }
     }
 
     async update(req: Request, res: Response) {
         const prisma = new PrismaClient();
-        const adminAlterado = await prisma.admin.update(
+        const DisciplinaAlterada = await prisma.disciplina.update(
             {
                 where: { id: Number(req.params.id) },
                 data: req.body,
                 select: {
-                    usuario: true,
-                    senha: true   
+                    id: true,
+                    nome: true   
                 }
             }
         );
-        res.status(200).json(adminAlterado);
+        res.status(200).json(DisciplinaAlterada);
     }
 
     async delete(req: Request, res: Response) {
         const prisma = new PrismaClient();
-        await prisma.admin.delete(
+        await prisma.disciplina.delete(
             {
                 where: { id: Number(req.params.id) }
             }
@@ -86,10 +82,9 @@ class AdminController {
         res.status(200).json({ excluido: true });
     }
 
-    async autenticacao(req: Request, res: Response) { console.log("olá");
+    async autenticacao(req: Request, res: Response) {
         const prisma = new PrismaClient();
         const { usuario, senha } = req.body;
-        console.log(req.body);
         const consulta = await prisma.admin.findFirst(
             {
                 where: {
@@ -99,7 +94,7 @@ class AdminController {
             }
         );
         if (consulta == null) {
-            return res.status(401).json({ status: 'Não autorizadooooo' });
+            return res.status(401).json({ status: 'Não autorizado' });
         } else {
             console.log(consulta.senha);
             console.log((await hash(senha, 8)).length);
@@ -121,6 +116,4 @@ class AdminController {
             }
         }
     }
-} export default AdminController
-
-//SÓ FALTA CORRIGIR A AUTENTICAÇÃO
+} export default DisciplinaController

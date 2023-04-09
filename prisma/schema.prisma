@@ -52,14 +52,14 @@ model Professor {
 
 model Bimestre {
   id  Int @id @default(autoincrement())
-  ano Int @default(4)
+  ano Int 
 
   @@map("bimestres")
 }
 
 model Disciplina {
   id   Int    @id @default(autoincrement())
-  nome String @db.VarChar(30)
+  nome String @db.VarChar(30) @unique
 
   @@map("disciplinas")
 }
@@ -69,4 +69,20 @@ model Nota {
   valor Decimal @db.Decimal(3, 1)
 
   @@map("notas")
+}
+
+model Falta {
+  id         Int     @id @default(autoincrement())
+  quantidade Int
+
+  @@map("faltas")
+}
+
+model Ocorrencia {
+  id        Int     @id @default(autoincrement())
+  data      String  @db.VarChar(10)
+  assunto   String  @db.VarChar(40)
+  descricao String  @db.VarChar(200)
+
+  @@map("ocorrencias")
 }

@@ -3,84 +3,75 @@ import { PrismaClient } from '@prisma/client';
 import { hash, compare } from 'bcryptjs';  // pacote de criptografia
 import { Secret, sign } from 'jsonwebtoken'; // sign é usado para gerar o token
 
-class AdminController {
+class TurmaController {
 
     async index(req: Request, res: Response) {
         const prisma = new PrismaClient();
-        const admins = await prisma.admin.findMany(
+        const turmas = await prisma.turma.findMany(
             {
                 orderBy: { id: 'asc' },
                 select: {
                     id: true,
-                    usuario: true,
-                    senha: true
                 }
             }
         );
-        res.status(200).json(admins);
+        res.status(200).json(turmas);
     }
 
     async show(req: Request, res: Response) {
         const prisma = new PrismaClient();
-        const admins = await prisma.admin.findUnique(
+        const turmas = await prisma.turma.findUnique(
             {
-                where: { id: Number(req.params.id) },
+                where: { id: String(req.params.id) },
                 select: {
-                    id: true,
-                    usuario: true,
-                    senha: true   
+                    id: true
                 }
             }
         );
-        res.status(200).json(admins);
+        res.status(200).json(turmas);
     }
 
     async store(req: Request, res: Response) {
         const prisma = new PrismaClient();
-        const { id, usuario, senha } = req.body;
-        if (id == null || usuario == null || senha == null) {
-            return res.status(400).json({ status: 'id, usuário e senha devem ser fornecidos.' });
+        const {id} = req.body;
+        if (id == null) {
+            return res.status(400).json({ status: 'O id da turma deve ser fornecido.' });
         }
         try {
-            const novoAdmin = await prisma.admin.create(
+            const novaTurma = await prisma.turma.create(
                 {
                     data: {
                         id: id,
-                        usuario: usuario,
-                        senha: await hash(senha, 8) // ciptografa a senha, 8 é o salto
                     },
                     select: {
                         id: true,
-                        usuario: true,
-                        senha: true
                     }
                 });
-            res.status(200).json(novoAdmin);
+            res.status(200).json(novaTurma);
         } catch (erro) {
-            return res.status(400).json({ status: 'O nome de usuário deve ser único' });
+            return res.status(400).json({ status: 'O id da turma deve ser único' });
         }
     }
 
     async update(req: Request, res: Response) {
         const prisma = new PrismaClient();
-        const adminAlterado = await prisma.admin.update(
+        const turmaAlterada = await prisma.turma.update(
             {
-                where: { id: Number(req.params.id) },
+                where: { id: String(req.params.id) },
                 data: req.body,
                 select: {
-                    usuario: true,
-                    senha: true   
+                    id: true 
                 }
             }
         );
-        res.status(200).json(adminAlterado);
+        res.status(200).json(turmaAlterada);
     }
 
     async delete(req: Request, res: Response) {
         const prisma = new PrismaClient();
-        await prisma.admin.delete(
+        await prisma.turma.delete(
             {
-                where: { id: Number(req.params.id) }
+                where: { id: String(req.params.id) }
             }
         );
         res.status(200).json({ excluido: true });
@@ -121,6 +112,6 @@ class AdminController {
             }
         }
     }
-} export default AdminController
+} export default TurmaController
 
 //SÓ FALTA CORRIGIR A AUTENTICAÇÃO

@@ -3,89 +3,106 @@ import { PrismaClient } from '@prisma/client';
 import { hash, compare } from 'bcryptjs';  // pacote de criptografia
 import { Secret, sign } from 'jsonwebtoken'; // sign é usado para gerar o token
 
-class AdminController {
+class ProfessorController {
 
     async index(req: Request, res: Response) {
         const prisma = new PrismaClient();
-        const admins = await prisma.admin.findMany(
+        const professores = await prisma.professor.findMany(
             {
-                orderBy: { id: 'asc' },
+                orderBy: { registro: 'asc' },
                 select: {
-                    id: true,
-                    usuario: true,
-                    senha: true
+                    registro: true,
+                    senha: true,
+                    nome: true,
+                    endereco: true,
+                    telFixo: true,
+                    cel: true
                 }
             }
         );
-        res.status(200).json(admins);
+        res.status(200).json(professores);
     }
 
     async show(req: Request, res: Response) {
         const prisma = new PrismaClient();
-        const admins = await prisma.admin.findUnique(
+        const professores = await prisma.professor.findUnique(
             {
-                where: { id: Number(req.params.id) },
+                where: { registro: Number(req.params.registro) },
                 select: {
-                    id: true,
-                    usuario: true,
-                    senha: true   
+                    registro: true,
+                    senha: true,
+                    nome: true,
+                    endereco: true,
+                    telFixo: true,
+                    cel: true  
                 }
             }
         );
-        res.status(200).json(admins);
+        res.status(200).json(professores);
     }
 
     async store(req: Request, res: Response) {
         const prisma = new PrismaClient();
-        const { id, usuario, senha } = req.body;
-        if (id == null || usuario == null || senha == null) {
-            return res.status(400).json({ status: 'id, usuário e senha devem ser fornecidos.' });
+        const { registro, senha, nome, endereco, telFixo, cel } = req.body;
+        if (registro == null || senha == null || nome == null || endereco == null) {
+            return res.status(400).json({ status: 'O registro, nome, senha e o endereço do professor devem ser fornecidos.' });
         }
         try {
-            const novoAdmin = await prisma.admin.create(
+            const novoProfessor = await prisma.professor.create(
                 {
                     data: {
-                        id: id,
-                        usuario: usuario,
-                        senha: await hash(senha, 8) // ciptografa a senha, 8 é o salto
+                        registro: registro,
+                        senha: await hash(senha, 8), // ciptografa a senha, 8 é o salto
+                        nome: nome,
+                        endereco: endereco,
+                        telFixo: telFixo,
+                        cel: cel
                     },
                     select: {
-                        id: true,
-                        usuario: true,
-                        senha: true
+                        registro: true,
+                        senha: true,
+                        nome: true,
+                        endereco: true,
+                        telFixo: true,
+                        cel: true  
                     }
                 });
-            res.status(200).json(novoAdmin);
+            res.status(200).json(novoProfessor);
         } catch (erro) {
-            return res.status(400).json({ status: 'O nome de usuário deve ser único' });
+            return res.status(400).json({ status: 'O registro do professor deve ser único' });
         }
     }
 
     async update(req: Request, res: Response) {
         const prisma = new PrismaClient();
-        const adminAlterado = await prisma.admin.update(
+        const professorAlterado = await prisma.professor.update(
             {
-                where: { id: Number(req.params.id) },
+                where: { registro: Number(req.params.registro) },
                 data: req.body,
                 select: {
-                    usuario: true,
-                    senha: true   
+                    registro: true,
+                    senha: true,
+                    nome: true,
+                    endereco: true,
+                    telFixo: true,
+                    cel: true   
                 }
             }
         );
-        res.status(200).json(adminAlterado);
+        res.status(200).json(professorAlterado);
     }
 
     async delete(req: Request, res: Response) {
         const prisma = new PrismaClient();
-        await prisma.admin.delete(
+        await prisma.professor.delete(
             {
-                where: { id: Number(req.params.id) }
+                where: { registro: Number(req.params.registro) }
             }
         );
         res.status(200).json({ excluido: true });
     }
 
+    
     async autenticacao(req: Request, res: Response) { console.log("olá");
         const prisma = new PrismaClient();
         const { usuario, senha } = req.body;
@@ -121,6 +138,6 @@ class AdminController {
             }
         }
     }
-} export default AdminController
+} export default ProfessorController
 
 //SÓ FALTA CORRIGIR A AUTENTICAÇÃO

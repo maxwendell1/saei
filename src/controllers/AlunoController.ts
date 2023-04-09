@@ -13,7 +13,6 @@ class AlunoController {
                     rm: true,
                     nome: true,
                     ra: true,
-                    nascimento: true,
                     endereco: true,
                     telFixo: true,
                     cel: true,
@@ -34,7 +33,6 @@ class AlunoController {
                     rm: true,
                     senha: true,
                     nome: true,
-                    nascimento: true,
                     ra: true,
                     endereco: true,
                     email: true,
@@ -87,7 +85,7 @@ class AlunoController {
 
         res.status(200).json(novoAluno);
         }catch(erro){
-            return res.status(400).json({ status: 'O rm do aluno deve ser único' });
+            return res.status(400).json({ status: erro });
         }
 
     }
@@ -102,7 +100,6 @@ class AlunoController {
                     rm: true,
                     senha: true,
                     nome: true,
-                    nascimento: true,
                     ra: true,
                     endereco: true,
                     email: true,
@@ -161,3 +158,5 @@ class AlunoController {
         }
     }
 } export default AlunoController
+
+//SÓ FALTA CORRIGIR A AUTENTICAÇÃO
