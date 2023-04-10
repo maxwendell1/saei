@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client';
 import { hash, compare } from 'bcryptjs';  // pacote de criptografia
 import { Secret, sign } from 'jsonwebtoken'; // sign é usado para gerar o token
 
-class FaltaController {
+class TurmaController {
 
     async index(req: Request, res: Response) {
         const prisma = new PrismaClient();
@@ -21,73 +21,67 @@ class FaltaController {
 
     async show(req: Request, res: Response) {
         const prisma = new PrismaClient();
-        const faltas = await prisma.falta.findUnique(
+        const turmas = await prisma.turma.findUnique(
             {
-                where: { id: Number(req.params.id) },
+                where: { id: String(req.params.id) },
                 select: {
-                    id: true,
-                    quantidade: true  
+                    id: true
                 }
             }
         );
-        res.status(200).json(faltas);
+        res.status(200).json(turmas);
     }
 
     async store(req: Request, res: Response) {
         const prisma = new PrismaClient();
-        const { id, quantidade } = req.body;
-        if (id == null || quantidade == null) {
-            return res.status(400).json({ status: 'id e quantidade de faltas devem ser fornecidos.' });
+        const {id} = req.body;
+        if (id == null) {
+            return res.status(400).json({ status: 'O id da turma deve ser fornecido.' });
         }
         try {
-            const novaFalta = await prisma.falta.create(
+            const novaTurma = await prisma.turma.create(
                 {
                     data: {
                         id: id,
-                        quantidade: quantidade  
                     },
                     select: {
                         id: true,
-                        quantidade: true  
                     }
                 });
-            res.status(200).json(novaFalta);
+            res.status(200).json(novaTurma);
         } catch (erro) {
-            if(quantidade < 0){
-            return res.status(400).json({ status: 'A quantidade de faltas não pode ser inferior a 0' });
-            }
+            return res.status(400).json({ status: 'O id da turma deve ser único' });
         }
     }
 
     async update(req: Request, res: Response) {
         const prisma = new PrismaClient();
-        const faltaAlterada = await prisma.falta.update(
+        const turmaAlterada = await prisma.turma.update(
             {
-                where: { id: Number(req.params.id) },
+                where: { id: String(req.params.id) },
                 data: req.body,
                 select: {
-                    id: true,
-                    quantidade: true    
+                    id: true 
                 }
-
             }
         );
-        res.status(200).json(faltaAlterada);
+        res.status(200).json(turmaAlterada);
     }
 
     async delete(req: Request, res: Response) {
         const prisma = new PrismaClient();
-        await prisma.falta.delete(
+        await prisma.turma.delete(
             {
-                where: { id: Number(req.params.id) }
+                where: { id: String(req.params.id) }
             }
         );
         res.status(200).json({ excluido: true });
     }
 
-    async autenticacao(req: Request, res: Response) {
+    async autenticacao(req: Request, res: Response) { console.log("olá");
         const prisma = new PrismaClient();
         const { usuario, senha } = req.body;
+        console.log(req.body);
         const consulta = await prisma.admin.findFirst(
             {
                 where: {
@@ -97,7 +91,7 @@ class FaltaController {
             }
         );
         if (consulta == null) {
-            return res.status(401).json({ status: 'Não autorizado' });
+            return res.status(401).json({ status: 'Não autorizadooooo' });
         } else {
             console.log(consulta.senha);
             console.log((await hash(senha, 8)).length);
@@ -119,6 +113,6 @@ class FaltaController {
             }
         }
     }
-} export default FaltaController
+} export default TurmaController
 
 //SÓ FALTA CORRIGIR A AUTENTICAÇÃO

@@ -12,6 +12,7 @@ class TurmaController {
                 orderBy: { id: 'asc' },
                 select: {
                     id: true,
+                    sigla: true
                 }
             }
         );
@@ -22,9 +23,10 @@ class TurmaController {
         const prisma = new PrismaClient();
         const turmas = await prisma.turma.findUnique(
             {
-                where: { id: String(req.params.id) },
+                where: { id: Number(req.params.id) },
                 select: {
-                    id: true
+                    id: true,
+                    sigla: true
                 }
             }
         );
@@ -34,22 +36,24 @@ class TurmaController {
     async store(req: Request, res: Response) {
         const prisma = new PrismaClient();
         const {id} = req.body;
-        if (id == null) {
-            return res.status(400).json({ status: 'O id da turma deve ser fornecido.' });
+        if (id == null || sigla == null) {
+            return res.status(400).json({ status: 'O id e a sigla da turma devem ser fornecidos.' });
         }
         try {
             const novaTurma = await prisma.turma.create(
                 {
                     data: {
                         id: id,
+                        sigla: sigla
                     },
                     select: {
                         id: true,
+                        sigla: true
                     }
                 });
             res.status(200).json(novaTurma);
         } catch (erro) {
-            return res.status(400).json({ status: 'O id da turma deve ser único' });
+            return res.status(400).json({ status: 'O id e a sigla da turma devem ser únicos' });
         }
     }
 
@@ -57,10 +61,11 @@ class TurmaController {
         const prisma = new PrismaClient();
         const turmaAlterada = await prisma.turma.update(
             {
-                where: { id: String(req.params.id) },
+                where: { id: Number(req.params.id) },
                 data: req.body,
                 select: {
-                    id: true 
+                    id: true,
+                    sigla: true
                 }
             }
         );
@@ -71,13 +76,13 @@ class TurmaController {
         const prisma = new PrismaClient();
         await prisma.turma.delete(
             {
-                where: { id: String(req.params.id) }
+                where: { id: Number(req.params.id) }
             }
         );
         res.status(200).json({ excluido: true });
     }
 
-    async autenticacao(req: Request, res: Response) { console.log("olá");
+    async autenticacao(req: Request, res: Response) {
         const prisma = new PrismaClient();
         const { usuario, senha } = req.body;
         console.log(req.body);
@@ -112,6 +117,37 @@ class TurmaController {
             }
         }
     }
+
+/*
+    async associarAlunos(req:Request,res:Response){
+        // Exemplo de json recebido: {alunos:[1,2]}
+        const {alunos} = req.body;
+        const dados = alunos.map( (x:any)=>{return {id:x}} );  // resulta: [{id:1},{id:2}]
+        const prisma = new PrismaClient();
+        const alunoAlterado = await prisma.aluno.update(
+            {
+                where: {rm: Number(req.params.rm) },
+                data: {
+                    alunos: {connect:dados} // associa aluno à turma
+                },
+                select :{
+                    rm: true,
+                    senha: true,
+                    nome: true,
+                    ra: true,
+                    endereco: true,
+                    email: true,
+                    telFixo: true,
+                    cel: true,
+                    responsavel1: true,
+                    responsavel2: true
+                }
+            }
+        );
+        return res.status(200).json(alunoAlterado);
+    }
+*/
+
 } export default TurmaController
 
 //SÓ FALTA CORRIGIR A AUTENTICAÇÃO

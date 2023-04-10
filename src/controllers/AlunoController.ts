@@ -157,6 +157,7 @@ class AlunoController {
             }
         }
     }
+
 } export default AlunoController
 
 //SÓ FALTA CORRIGIR A AUTENTICAÇÃO

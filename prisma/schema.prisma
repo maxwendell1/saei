@@ -34,7 +34,8 @@ model Aluno {
 }
 
 model Turma {
-  id String @id @db.VarChar(3)
+  id    Int @id @default(autoincrement())
+  sigla String @unique @db.VarChar(3)
 
   @@map("turmas")
 }
@@ -73,7 +74,7 @@ model Nota {
 
 model Falta {
   id         Int     @id @default(autoincrement())
-  quantidade Int
+  quantidade Int     @default(3)
 
   @@map("faltas")
 }
