@@ -35,7 +35,7 @@ class TurmaController {
 
     async store(req: Request, res: Response) {
         const prisma = new PrismaClient();
-        const {id} = req.body;
+        const {id, sigla} = req.body;
         if (id == null || sigla == null) {
             return res.status(400).json({ status: 'O id e a sigla da turma devem ser fornecidos.' });
         }
