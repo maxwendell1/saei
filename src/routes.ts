@@ -26,6 +26,8 @@ Roteador.put('/admins/:id', new AdminController().update); // Atualiza
 Roteador.delete('/admins/:id', new AdminController().delete); // Exclui
 Roteador.get('/admins/autenticacao', new AdminController().autenticacao); // Autenticação - retorna um token de segurança se usuário for autenticado
 
+//Roteador.get('/abc123', new AdminController().autenticacao);
+
 //Rotas Alunos:
 Roteador.get('/alunos', new AlunoController().index); // Lista todos os alunos
 Roteador.get('/alunos/:rm',  new AlunoController().show); // Consulta 1 Aluno

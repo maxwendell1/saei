@@ -21,6 +21,7 @@ class AdminController {
     }
 
     async show(req: Request, res: Response) {
+        //return res.status(200).json({teste:123});
         const prisma = new PrismaClient();
         const admins = await prisma.admin.findUnique(
             {
@@ -38,7 +39,7 @@ class AdminController {
     async store(req: Request, res: Response) {
         const prisma = new PrismaClient();
         const { id, usuario, senha } = req.body;
-        if (id == null || usuario == null || senha == null) {
+        if (id==null || usuario==null || senha==null) {
             return res.status(400).json({ status: 'id, usuário e senha devem ser fornecidos.' });
         }
         try {
@@ -47,14 +48,15 @@ class AdminController {
                     data: {
                         id: id,
                         usuario: usuario,
-                        senha: await hash(senha, 8) // ciptografa a senha, 8 é o salto
+                        senha: await hash(senha,8), // ciptografa a senha, 8 é o salto
                     },
                     select: {
                         id: true,
                         usuario: true,
                         senha: true
                     }
-                });
+                }
+            );
             res.status(200).json(novoAdmin);
         } catch (erro) {
             return res.status(400).json({ status: 'O nome de usuário deve ser único' });
@@ -63,10 +65,14 @@ class AdminController {
 
     async update(req: Request, res: Response) {
         const prisma = new PrismaClient();
+        const { usuario, senha } = req.body;
         const adminAlterado = await prisma.admin.update(
             {
                 where: { id: Number(req.params.id) },
-                data: req.body,
+                data: {
+                    usuario: usuario,
+                    senha: await hash(senha,8), // ciptografa a senha, 8 é o salto
+                },
                 select: {
                     usuario: true,
                     senha: true   
@@ -86,20 +92,21 @@ class AdminController {
         res.status(200).json({ excluido: true });
     }
 
-    async autenticacao(req: Request, res: Response) { console.log("olá");
+    async autenticacao(req:Request,res:Response){
+        //return res.status(200).json({teste:456});
         const prisma = new PrismaClient();
         const { usuario, senha } = req.body;
-        console.log(req.body);
+        // console.log(req.body);
+        // return res.status(200).json(req.body);
         const consulta = await prisma.admin.findFirst(
             {
                 where: {
-                    usuario: usuario,
-                    senha: senha
+                    usuario: usuario
                 }
             }
         );
-        if (consulta == null) {
-            return res.status(401).json({ status: 'Não autorizadooooo' });
+        if (consulta==null) {
+            return res.status(401).json({ status: 'Não autorizado' });
         } else {
             console.log(consulta.senha);
             console.log((await hash(senha, 8)).length);
@@ -112,15 +119,17 @@ class AdminController {
                     process.env.CHAVESEGURANCA as Secret,
                     {
                         subject: consulta.id.toString(),
-                        expiresIn: 'id'
+                        expiresIn: '1d'
                     }
                 );
                 return res.status(200).json({ token: token });
             } else {
-                return res.status(401).json({ status: 'Não deu certo' });
+                return res.status(401).json({ status: 'Não autorizado' });
             }
         }
     }
-} export default AdminController
+} 
+
+export default AdminController
 
 //SÓ FALTA CORRIGIR A AUTENTICAÇÃO
