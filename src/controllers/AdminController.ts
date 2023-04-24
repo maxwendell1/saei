@@ -65,7 +65,7 @@ class AdminController {
 
     async update(req: Request, res: Response) {
         const prisma = new PrismaClient();
-        const { usuario, senha } = req.body;
+        const { nome, usuario, senha } = req.body;
         const adminAlterado = await prisma.admin.update(
             {
                 where: { id: Number(req.params.id) },
@@ -93,11 +93,8 @@ class AdminController {
     }
 
     async autenticacao(req:Request,res:Response){
-        //return res.status(200).json({teste:456});
         const prisma = new PrismaClient();
         const { usuario, senha } = req.body;
-        // console.log(req.body);
-        // return res.status(200).json(req.body);
         const consulta = await prisma.admin.findFirst(
             {
                 where: {

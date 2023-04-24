@@ -33,13 +33,6 @@ model Aluno {
   @@map("alunos")
 }
 
-model Turma {
-  id    Int @id @default(autoincrement())
-  sigla String @unique @db.VarChar(3)
-
-  @@map("turmas")
-}
-
 model Professor {
   registro Int     @id @default(autoincrement())
   senha    String  @db.VarChar(20)
@@ -49,6 +42,13 @@ model Professor {
   cel      String? @db.VarChar(11)
 
   @@map("professores")
+}
+
+model Turma {
+  id    Int @id @default(autoincrement())
+  sigla String @unique @db.VarChar(3)
+
+  @@map("turmas")
 }
 
 model Bimestre {
